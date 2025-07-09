@@ -74,6 +74,11 @@ docker run -d \
 
 # ========== [步骤 4/6] IP探测 + 区域分类 ==========
 echo "[4/6] Extracting top $TOP_N IPs per region..."
+c="/usr/bin/cf"
+if [ ! -f $c ];then
+	cp cf $c;chmod +x $c
+fi
+ 
 cf -ips $IPV -outfile ${IPV}.csv >/dev/null 2>&1
 
 awk -F ',' '$2 ~ /SJC|LAX|ATL|ORD|DFW|MIA|SEA|DEN/ {print $0}' ${IPV}.csv | sort -t ',' -k5,5n | head -n $TOP_N > US-${IPV}.csv
